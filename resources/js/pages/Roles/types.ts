@@ -1,4 +1,4 @@
-export interface PageProps<T = any> {
+export interface PageProps {
   auth?: {
     user: {
       id: number;
@@ -8,11 +8,11 @@ export interface PageProps<T = any> {
       permissions?: string[];
     };
   };
-  ziggy?: any;
+  ziggy?: Record<string, unknown>; // 👈 Better than `any`
   flash?: {
     success?: string;
     error?: string;
   };
   errors?: Record<string, string>;
-  [key: string]: any;
+  [key: string]: unknown; // 👈 Avoid `any` here too
 }

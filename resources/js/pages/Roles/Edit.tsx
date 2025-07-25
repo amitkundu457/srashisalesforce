@@ -4,32 +4,47 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { type BreadcrumbItem } from '@/types';
 
-export default function RoleForm({ role = null, permissions }: any) {
+// ---------- Types ----------
+type Permission = {
+  id: number;
+  name: string;
+};
+
+type GroupedPermissions = {
+  [groupName: string]: Permission[];
+};
+
+type Role = {
+  id: number;
+  name: string;
+  permissions: Permission[];
+};
+
+interface RoleFormProps {
+  role?: Role | null;
+  permissions: GroupedPermissions;
+}
+
+// ---------- Component ----------
+export default function RoleForm({ role = null, permissions }: RoleFormProps) {
   const [loading, setLoading] = useState(true);
   const { flash } = usePage().props as { flash: { success?: string; error?: string } };
 
   const { data, setData, post, put, processing, errors } = useForm({
     name: role?.name || '',
-    permissions: role?.permissions?.map((p: any) => p.name) || [],
+    permissions: role?.permissions?.map((p) => p.name) || [],
   });
 
-  const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Roles', href: '/roles' },
-  ];
+  const breadcrumbs: BreadcrumbItem[] = [{ title: 'Roles', href: '/roles' }];
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timeout);
   }, []);
 
-  // ✅ Toast show on success flash message
   useEffect(() => {
-    if (flash?.success) {
-      toast.success(flash.success);
-    }
-    if (flash?.error) {
-      toast.error(flash.error);
-    }
+    if (flash?.success) toast.success(flash.success);
+    if (flash?.error) toast.error(flash.error);
   }, [flash]);
 
   const handleChange = (perm: string) => {
@@ -41,9 +56,14 @@ export default function RoleForm({ role = null, permissions }: any) {
     );
   };
 
-  const submit = () => {
-    role ? put(`/roles/${role.id}`) : post('/roles');
-  };
+ const submit = () => {
+  if (role) {
+    put(`/roles/${role.id}`);
+  } else {
+    post('/roles');
+  }
+};
+
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -102,26 +122,34 @@ export default function RoleForm({ role = null, permissions }: any) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(permissions).map(([group, perms]: any) => (
-              <div key={group} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
-                <h4 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">
-                  {group}
-                </h4>
-                <div className="space-y-2">
-                  {perms.map((perm: any) => (
-                    <label key={perm.id} className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
-                      <input
-                        type="checkbox"
-                        className="accent-blue-600 rounded"
-                        checked={data.permissions.includes(perm.name)}
-                        onChange={() => handleChange(perm.name)}
-                      />
-                      <span>{perm.name}</span>
-                    </label>
-                  ))}
+            {Object.entries(permissions).map(([group, perms]: [string, Permission[]]) => {
+              return (
+                <div
+                  key={group}
+                  className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm"
+                >
+                  <h4 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-wide">
+                    {group}
+                  </h4>
+                  <div className="space-y-2">
+                    {perms.map((perm) => (
+                      <label
+                        key={perm.id}
+                        className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        <input
+                          type="checkbox"
+                          className="accent-blue-600 rounded"
+                          checked={data.permissions.includes(perm.name)}
+                          onChange={() => handleChange(perm.name)}
+                        />
+                        <span>{perm.name}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -132,9 +160,7 @@ export default function RoleForm({ role = null, permissions }: any) {
               onClick={submit}
               disabled={processing}
               className={`inline-flex items-center justify-center rounded-lg px-6 py-2 text-sm font-medium text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
-                processing
-                  ? 'bg-blue-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'
+                processing ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
               }`}
             >
               {processing ? 'Saving...' : role ? 'Update Role' : 'Create Role'}

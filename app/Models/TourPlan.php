@@ -17,4 +17,9 @@ protected $fillable = [
     'tour_plan_option',
 ];
 
+// public function vistDetails(){
+//     return $this->hasOne(Visit::class ,'tour_plan_id');
+
+// }
+
 }

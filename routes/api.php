@@ -17,4 +17,5 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     
 
-});Route::post('tourplans', [TourPlanController::class, 'store']);
+});
+Route::post('tourplans', [TourPlanController::class, 'store']);

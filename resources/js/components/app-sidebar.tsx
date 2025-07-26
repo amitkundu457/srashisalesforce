@@ -49,6 +49,12 @@ const mainNavItems: NavItem[] = [
       },
     ],
   },
+  //t plan 
+  {
+    title: 'Tour Plan',
+    href: '/tour-plans',
+    icon: Folder,
+  },
 
 ];
 

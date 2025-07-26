@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\TourPlanController;
 
 // Route::get('/', function () {
 //     return Inertia::render('welcome');
@@ -30,8 +31,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/leadtype/{id}', [MasterController::class, 'update'])->name('leadtype.update');
     Route::delete('/leadtype/{id}', [MasterController::class, 'destroy'])->name('leadtype.destroy');
 
-
-
+//toures fetch routes
+Route::get('/tour-plans', [TourPlanController::class, 'index']);
+// Route::put('/tour-plans/{id}/update-status', [TourPlanController::class, 'updateStatus']);
+Route::put('/tour-plans/{id}/status', [TourPlanController::class, 'updateStatus'])->name('tour-plans.updateStatus');
 //lead source route
     Route::get('/leadsource', [MasterController::class, 'leadsource'])->name('leadsource.index');
     Route::post('/leadsource', [MasterController::class, 'leadsourcestore'])->name('leadsource.store');

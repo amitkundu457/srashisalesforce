@@ -24,4 +24,8 @@ protected $fillable = [
     'visit_name',
 ];
 
+// public function Tour(){
+//     return $this->belongsTo(TourPlan::class ,'tour_plan_id');
+// }
+
 }

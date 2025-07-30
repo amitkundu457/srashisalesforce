@@ -3,8 +3,9 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MasterController;
-use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\TourPlanController;
+use App\Http\Controllers\SalePersonController;
+use App\Http\Controllers\RolePermissionController;
 
 // Route::get('/', function () {
 //     return Inertia::render('welcome');
@@ -48,6 +49,12 @@ Route::put('/tour-plans/{id}/status', [TourPlanController::class, 'updateStatus'
     Route::put('/business/{business}', [MasterController::class, 'update']);
     Route::delete('/business/{business}', [MasterController::class, 'destroy']);
    
+    //salesperson route
+    Route::get('/salesperson', [SalePersonController::class, 'index'])->name('salesperson.index');
+    Route::post('/salesperson', [SalePersonController::class, 'store'])->name('salesperson.store');
+    Route::put('/salesperson/{id}', [SalePersonController::class, 'update'])->name('salesperson.update');
+    Route::delete('/salesperson/{id}', [SalePersonController::class, 'destroy'])->name('salesperson.destroy');
+    Route::get('/salesperson/{id}', [SalePersonController::class, 'show'])->name('salesperson.show');
 
 });
 

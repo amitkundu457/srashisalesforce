@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\TourPlan;
-use App\Models\Visit;
 use App\Models\Lead;
+use App\Models\Visit;
+use App\Models\TourPlan;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\SalesManVisit;
+use App\Models\SaleManVisitphoto;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class TourPlanController extends Controller
 {
@@ -82,4 +86,106 @@ class TourPlanController extends Controller
             ], 500);
         }
     }
+
+
+
+
+    public function SalesManVisit(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'tour_plans_id' => 'required|exists:tour_plans,id',
+            'clock_in' => 'required|date',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+        ]);
+    } catch (ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => $e->errors(),
+        ], 422);
+    }
+
+    SalesManVisit::create([
+        'tour_plans_id' => $validated['tour_plans_id'],
+        'clock_in' => $validated['clock_in'],
+        'lat' => $validated['lat'],
+        'lng' => $validated['lng'],
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Salesman visit recorded successfully.',
+    ], 201);
+}
+
+   // 📤 Upload (Create)
+    public function Salesmanstorephoto(Request $request)
+    {
+
+        try {
+        $validated = $request->validate([
+            'sales_man_visit_id' => 'required|exists:tour_plans,id',
+            'photo' => 'required|image|',
+           
+        ]);
+    } catch (ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => $e->errors(),
+        ], 422);
+    }
+       
+
+        $path = $request->file('photo')->store('sales_visit_photos', 'public');
+
+        $photo = SaleManVisitphoto::create([
+            'sales_man_visits_id' => $request->sales_man_visit_id,
+            'photo_path' => $path,
+        ]);
+
+        return response()->json(['message' => 'Photo uploaded', 'data' => $photo]);
+    }
+
+    // ✏️ Update (Edit)
+    public function SalesmanphotoUpdate(Request $request, $id)
+    {
+        $photo = SaleManVisitphoto::findOrFail($id);
+        // dd($id);
+
+        $request->validate([
+            'photo' => 'required|image|max:5120',
+        ]);
+
+        // Delete old image from storage
+        if (Storage::disk('public')->exists($photo->photo_path)) {
+            Storage::disk('public')->delete($photo->photo_path);
+        }
+
+        // Save new photo
+        $newPath = $request->file('photo')->store('sales_visit_photos', 'public');
+
+        $photo->update([
+            'photo_path' => $newPath,
+        ]);
+
+        return response()->json(['message' => 'Photo updated', 'data' => $photo]);
+    }
+
+    // 🗑 Delete
+    public function Salesmandestroy($id)
+    {
+        $photo = SaleManVisitphoto::findOrFail($id);
+
+        if (Storage::disk('public')->exists($photo->photo_path)) {
+            Storage::disk('public')->delete($photo->photo_path);
+        }
+
+        $photo->delete();
+
+        return response()->json(['message' => 'Photo deleted']);
+    }
+
 }

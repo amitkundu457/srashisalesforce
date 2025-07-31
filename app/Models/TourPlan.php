@@ -22,4 +22,12 @@ protected $fillable = [
 
 // }
 
+public function expenses(){
+    return $this->hasMany(Expense::class ,'tour_plan_id');
+}
+
+public function user(){
+    return $this->belongsTo(User::class,'user_id');
+}
+
 }

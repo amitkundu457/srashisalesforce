@@ -54,6 +54,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
+    public function Tours(){
+        return $this->hasMany(TourPlan::class,'user_id');
+    }
+
     public function getJWTCustomClaims()
     {
         return [];

@@ -82,4 +82,5 @@ class TourPlanController extends Controller
             ], 500);
         }
     }
+   
 }

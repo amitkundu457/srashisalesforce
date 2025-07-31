@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\TourPlanController;
+use App\Http\Controllers\ExpenseController;
 
 // Route::get('/', function () {
 //     return Inertia::render('welcome');
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/roles/{role}', [RolePermissionController::class, 'destroy'])->name('roles.destroy');
 
 
+    //expense route
+    Route::resource('expenses', ExpenseController::class);
+    Route::get('/tour-plans/{id}/expenses', [TourPlanController::class, 'expenses'])->name('tour-plans.expenses');
+
     //lead type route
     Route::get('/leadtype', [MasterController::class, 'leadtype'])->name('leadtype.index');
     Route::post('/leadtype', [MasterController::class, 'store'])->name('leadtype.store');
@@ -33,8 +38,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 //toures fetch routes
 Route::get('/tour-plans', [TourPlanController::class, 'index']);
-// Route::put('/tour-plans/{id}/update-status', [TourPlanController::class, 'updateStatus']);
+// routes/web.php
+Route::post('/expenses/{expense}/status', [ExpenseController::class, 'updateStatus']);
+
+// Route::get('/tour-plans/{status?}', [TourPlanController::class, 'TourStatus'])->name('tour-plans.index');
+// Route::get('/tour-plans/{status?}', [TourPlanController::class, 'TourStatus']);
 Route::put('/tour-plans/{id}/status', [TourPlanController::class, 'updateStatus'])->name('tour-plans.updateStatus');
+
+Route::get('/tour-plans/{status?}', [TourPlanController::class, 'TourStatus'])->name('tour-plans.status');
+
 //lead source route
     Route::get('/leadsource', [MasterController::class, 'leadsource'])->name('leadsource.index');
     Route::post('/leadsource', [MasterController::class, 'leadsourcestore'])->name('leadsource.store');

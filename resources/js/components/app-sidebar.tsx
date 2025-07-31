@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/react';
 import {  Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
+
 const mainNavItems: NavItem[] = [
   {
     title: 'Dashboard',
@@ -27,6 +28,28 @@ const mainNavItems: NavItem[] = [
     //   },
     ],
   },
+  
+  //t plan 
+  {
+    title: 'Tour Management',
+    // href: '/tour-plans',
+    icon: Folder,
+    children:[
+      {
+        title: 'Tour Plans Lists',
+        href: '/tour-plans',
+      },
+      {
+        title: 'Tours Status',
+        href: '/tour-plans/{status?}',
+      },
+    ]
+  },
+  // {
+  //   title: 'Expenses',
+  //   href: '/expenses',
+  //   icon: Folder,
+  // },
   {
     title: 'Settings',
     icon: Folder,
@@ -48,12 +71,6 @@ const mainNavItems: NavItem[] = [
         href: '/business',
       },
     ],
-  },
-  //t plan 
-  {
-    title: 'Tour Plan',
-    href: '/tour-plans',
-    icon: Folder,
   },
 
 ];

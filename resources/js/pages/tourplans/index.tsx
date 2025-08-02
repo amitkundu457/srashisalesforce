@@ -204,6 +204,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import AttendanceHoverPopup from '@/components/ui/AttendanceHoverPopup';
 
 type Visit = {
     id: number;
@@ -215,6 +216,17 @@ type Visit = {
     dept_name: string | null;
 };
 
+type sales_man_attendance = {
+    id: number;
+    user_id: number;
+    clock_in: string |null;
+    clock_out: string | null;
+    date: string;
+   lat:string | null;
+   
+   lang:string | null;
+}
+
 type TourPlan = {
     id: number;
     user_id: number;
@@ -224,8 +236,10 @@ type TourPlan = {
     tour_plan_option: string;
     created_at: string;
     visits?: Visit[];
+    // sales_man_attendance?: sales_man_attendance[];
     user?: {
         name: string;
+        sales_man_attendance?:sales_man_attendance[]
     };
 };
 
@@ -380,6 +394,7 @@ const Index: React.FC<Props> = ({ tourPlans, filters }) => {
                             <th className="border p-2">Type</th>
                             <th className="border p-2">Visit Purpose</th>
                             {/* <th className="border p-2">Date</th> */}
+                            <th className="border p-2">Clock In|Out</th>
                             <th className="border p-2">Status</th>
                             <th className="border p-2">Expenses</th>
                         </tr>
@@ -387,6 +402,7 @@ const Index: React.FC<Props> = ({ tourPlans, filters }) => {
                     <tbody>
                         {tourPlans.data.map((plan, index) => {
                             const firstVisit = plan.visits?.[0];
+                            const firstAttendance=plan?.user?.sales_man_attendance?.[0];
                             return (
                                 <tr key={plan.id} className="hover:bg-white">
                                     <td className="border p-2">{(tourPlans.current_page - 1) * 10 + index + 1}</td>
@@ -399,6 +415,11 @@ const Index: React.FC<Props> = ({ tourPlans, filters }) => {
                                     {/* <td className="border p-2">
                                         {new Date(plan.created_at).toLocaleDateString()}
                                     </td> */}
+                                    <td className="border p-2">
+                                  
+                                            <AttendanceHoverPopup attendance={plan.user?.sales_man_attendance?.[0] ?? null} />
+                                    
+                                    </td>
                                     <td className="border p-2">
                                         <select
                                             className="rounded border px-2 py-1"

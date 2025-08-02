@@ -44,7 +44,7 @@ public function index(Request $request)
     $from = $request->input('from');
     $to = $request->input('to');
 
-    $tourPlans = TourPlan::with(['user', 'expenses', 'visits'])
+    $tourPlans = TourPlan::with(['user','user.salesManAttendance', 'user.attendanceSessions','user.attendanceSessions.breaks', 'expenses', 'visits'])
         ->when($search, fn($q) =>
             $q->whereHas('user', fn($q) =>
                 $q->where('name', 'like', "%{$search}%")

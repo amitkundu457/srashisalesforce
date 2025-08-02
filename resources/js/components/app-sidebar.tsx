@@ -22,10 +22,20 @@ const mainNavItems: NavItem[] = [
         title: 'Roles',
         href: '/settings/roles',
       },
-    //   {
-    //     title: 'Lead Types',
-    //     href: '/leadtype',
-    //   },
+      
+    ],
+  },
+
+  //sales Details
+  {
+    title: 'Sales Details',
+    icon: Folder,
+    children: [
+     
+      {
+        title: 'Sales Persons List ',
+        href: '/salespersons',
+      },
     ],
   },
   

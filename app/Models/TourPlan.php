@@ -17,17 +17,22 @@ protected $fillable = [
     'tour_plan_option',
 ];
 
-// public function vistDetails(){
-//     return $this->hasOne(Visit::class ,'tour_plan_id');
+ public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-// }
+    public function sales_man_visits()
+    {
+        return $this->hasMany(SalesManVisit::class);
+    }
 
 public function expenses(){
     return $this->hasMany(Expense::class ,'tour_plan_id');
 }
 
-public function user(){
-    return $this->belongsTo(User::class,'user_id');
-}
+// public function user(){
+//     return $this->belongsTo(User::class,'user_id');
+// }
 
 }

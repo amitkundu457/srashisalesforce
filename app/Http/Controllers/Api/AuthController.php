@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -85,6 +86,29 @@ class AuthController extends Controller
         'token_type' => 'bearer',
         'expires_in' => auth('api')->factory()->getTTL() * 60
     ]);
+}
+
+public function forgotpassword(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+    ]);
+
+    $status = Password::sendResetLink(
+        $request->only('email')
+    );
+
+    if ($status === Password::RESET_LINK_SENT) {
+        return response()->json([
+            'success' => true,
+            'message' => __('Password reset link sent successfully.'),
+        ]);
+    }
+
+    return response()->json([
+        'success' => false,
+        'message' => __($status), // e.g. "We can't find a user with that email address."
+    ], 422);
 }
 
 }
